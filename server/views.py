@@ -7,6 +7,7 @@ import time
 import random
 import copy
 import logging
+import bleach
 
 logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s \
     - %(levelname)s - %(message)s')
@@ -39,6 +40,7 @@ def joinGame(request, pname=None):
     """Should be called from activity_joining:button_joining_accept_name. Accepts 
     url/playername and adds player to Player database. Returns the player's pk id
     for the app to use in future."""
+    pname = bleach.clean(pname)
     if pname != None and GameState.objects.all()[0].statusID == 2:
         x = Player(name=pname, isAlive=True, president=False, chancellor=False, 
                    party="", role="", hasBeenInvestigated=False)
@@ -317,7 +319,7 @@ def executiveAffiliationLookOrder(request, id, selected):
     return HttpResponse(Player.objects.get(pk=selected).name + " is a filthy " \
                         + Player.objects.get(pk=selected).party + "!")
 
-'''3/19 refactor: everyone now views this view update statusID = 14. 
+'''3/19 refactor: everyone now views this view update statusID = 16. 
 Only the president will receive the JsonResponse with policy cards to inspect.'''
 def executivePolicyPeek(request, id):
     """View called by statusID 16 to president only. Shows the top three
@@ -340,7 +342,7 @@ def executivePolicyPeekConfirmation(request, id):
     updateGStatusUpdate(f'The current President is {findCurrentPresident().name}. Waiting for the President to nominate a Chancellor.')
     return HttpResponse('confirm')
 
-'''3/19 refactor: everyone now views this view update statusID = 14. 
+'''3/19 refactor: everyone now views this view update statusID = 15. 
 Only the president will receive the JsonResponse with policy cards to inspect.'''
 def executiveSpecialElection(request, id):
     """View called by statusID 15. JSON data sent to president for 
@@ -411,6 +413,8 @@ def getStatus(id):
     logging.debug(str(id))
     # debug_log_dump(playerDB=True)
     G = GameState.objects.all()[0]
+    if G.statusID == 2:
+        return JsonResponse({'statusID': 2})
     P = Player.objects.get(pk=id)
     information = {}
     information["name"] = P.name
@@ -904,7 +908,6 @@ def resetElectionTracker():
 
 def votingFinished():
     V = Voting.objects.all()
-    G = GameState.objects.all()[0]
     P = Player.objects.all()
     logging.info("---------------------------")
     logging.info("Voting completed.")
