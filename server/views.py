@@ -411,7 +411,8 @@ def getStatus(id):
     GameState.statusID, and GameState.statusUdpdate. Also includes secret
     information for Fascist players. Packaged in JsonResponse object."""
     logging.debug(str(id))
-    # debug_log_dump(playerDB=True)
+    logging.error('Start of getStatus() possible error here.')
+    debug_log_dump(playerDB=True, gameState=True)
     G = GameState.objects.all()[0]
     if G.statusID == 2:
         return JsonResponse({'statusID': 2})
@@ -907,6 +908,7 @@ def resetElectionTracker():
     return
 
 def votingFinished():
+    G = GameState.objects.all()[0]
     V = Voting.objects.all()
     P = Player.objects.all()
     logging.info("---------------------------")
@@ -1096,7 +1098,19 @@ def debug_identity_check(id, chancellor=False, post=False):
             raise AssertionError("non chancellor got to nomination screen")
         return
 
-
+def mockData1():
+    '''5 player standard test'''
+    players = 'abcde'
+    roles = ['Liberal', 'Liberal', 'Liberal', 'Fascist', 'Hitler']
+    for i in range(len(players)):
+        x = Player.objects.get(name=players[i])
+        x.role = roles[i]
+        if roles[i] == 'Hitler':
+            x.party = 'Fascist'
+        else:
+            x.party = roles[i]
+        x.save()
+    return HttpResponse('')
 
 '''Death and inactivity will be handled client-side. If your status report
 lists you as dead, all of your submission-client-side buttons should be
