@@ -35,4 +35,7 @@ urlpatterns = [
     path('client/game_over', views.gameIsOver),
     path('client/president_policy_peek_confirm/<int:id>', views.executivePolicyPeekConfirmation),
 
+    # extra URLs for debugging.
+    path('debug/mockData1', views.mockData1),
+
 ]
