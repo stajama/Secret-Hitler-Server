@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'shs.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "DATABASE",
+        'NAME': "default",
         'HOST': 'localhost',
         'PORT': '',
     }
