@@ -17,3 +17,6 @@ def appMockUpTest1():
     for i in range(4):
         a.client_call_for_http('client/join_game/' + str(i))
     return True
+
+if __name__ == '__main__':
+    appMockUpTest1()

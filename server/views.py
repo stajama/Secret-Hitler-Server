@@ -41,6 +41,7 @@ def joinGame(request, pname=None):
     url/playername and adds player to Player database. Returns the player's pk id
     for the app to use in future."""
     pname = bleach.clean(pname)
+    pname = cleanSpaces(pname)
     if pname != None and GameState.objects.all()[0].statusID == 2:
         x = Player(name=pname, isAlive=True, president=False, chancellor=False, 
                    party="", role="", hasBeenInvestigated=False)
@@ -133,6 +134,7 @@ def policyPresidentDraw(request, id):
         for i in range(1, 4):
             hand[i] = drawCard()
         hand['information'] = 'Select a policy card to discard. The remaining cards will be passed to the Chancellor.'
+        hand['wait'] = ''
         return JsonResponse(hand)
     else:
         information = {}
@@ -170,6 +172,7 @@ def policyChancellorDraw(request, id):
         hand[1] = G.cardsForChancellor1
         hand[2] = G.cardsForChancellor2
         hand['information'] = 'Select a policy card to enact.'
+        hand['wait'] = ''
         if G.fasPolicyCount >= 5 and G.statusID != 12:
             hand["veto"] = True
             hand["vetoText"] = "You may veto these policies if the President consents."
@@ -266,10 +269,12 @@ def executiveExecution(request, id):
     if id == findCurrentPresident(True).id:
         information = getEligiblePlayerList()
         information["information"] = "You must now execute a player."
+        information['wait'] = ''
         return JsonResponse(information)
     else:
         information = {}
         information["information"] = GameState.objects.all()[0].statusUpdate
+        information['wait'] = '1'
         return JsonResponse(information)
 
 def executiveExecutionOrder(request, id, selected):
@@ -301,10 +306,12 @@ def executiveAffiliationLook(request, id):
     if Player.objects.get(pk=id).president:
         information = getEligiblePlayerList(affiliation=True)
         information["information"] = "You may now check the party affiliation card of any other player."
+        information['wait'] = ''
         return JsonResponse(information)
     else:
         information = {}
         information["information"] = GameState.objects.all()[0].statusUpdate
+        information['wait'] = '1'
         return JsonResponse(information)
 
 def executiveAffiliationLookOrder(request, id, selected):
@@ -328,11 +335,13 @@ def executivePolicyPeek(request, id):
         information = showNextThreeCards()
         logging.info('in executivePolicyPeek() for president: information dict: ' + str(information))
         information["information"] = "You may now peek at the next three policy cards in the policy deck."
+        information['wait'] = ''
         logging.info('executivePolicyPeek(): final: ' + str(information))
         return JsonResponse(information)
     else:
         information = {}
         information["information"] = GameState.objects.all()[0].statusUpdate
+        information['wait'] = '1'
         return JsonResponse(information)
 
 '''refactor follow up 3/26, we require a president confirmation to move statusID back to 3 after policy peek.'''
@@ -351,10 +360,12 @@ def executiveSpecialElection(request, id):
     if Player.objects.get(pk=id).president:
         information = getEligiblePlayerList()
         information["information"] = "You may now call a special election. Select a candidate to run for President."
+        information['wait'] = ''
         return JsonResponse(information)
     else:
         information = {}
         information["information"] = GameState.objects.all()[0].statusUpdate
+        information['wait'] = '1'
         return JsonResponse(information)
 
 def executiveSpecialElectionOrder(request, id, selected):
@@ -381,7 +392,8 @@ def nominateChancellor(request, id):
     information = {}
     if id == findCurrentPresident().id:
         information = getEligiblePlayerList(election=True)
-        information["information"] = "You may now nominate a candidate for president."
+        information["information"] = "You may now nominate a candidate for Chancellor."
+        information['wait'] = ''
     else:
         information['wait'] = '1'
     return JsonResponse(information)
@@ -418,6 +430,8 @@ def getStatus(id):
         return JsonResponse({'statusID': 2})
     P = Player.objects.get(pk=id)
     information = {}
+    information["livingPlayerCount"] = getLivingCount()
+    information["id"] = P.id
     information["name"] = P.name
     information["party"] = P.party
     information["role"] = P.role
@@ -452,6 +466,7 @@ def votingMachine():
     information = {}
     G = GameState.objects.all()[0]
     V = Voting.objects.all()
+    information['number of votes'] = len(V)
     for i in V:
         information[i.name] = i.vote
     if G.statusID == 99:
@@ -779,7 +794,7 @@ def oneToTheBackOfTheHead(playerDBentry):
     of total players in decreased. This is a easier refactor than introducing
     a new "living player count" table entry, but may not work in the long run.'''
 
-    # OBSOLETE - getLivingPlayerCount() should be used for such instances.
+    # OBSOLETE - getLivingCount() should be used for such instances.
     return
 
 def showNextThreeCards():
@@ -996,6 +1011,11 @@ def noZombiePresident():
         checking.save()
         cyclePresident()
     return
+
+def cleanSpaces(input):
+    while input.find("%_%"):
+        input = input[ : input.find("%_%")] + " " + input[input.find("%_%") + 3 : ]
+    return input
 
 ################################### DEBUG TOOLS ################################
 

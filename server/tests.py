@@ -154,6 +154,9 @@ class testing(TestCase):
         self.assertEqual(len(PolicyDeck.objects.all()), 14)
         clearAll()
 
+    def test_cleanSpaces(self):
+        self.assertEqual(cleanSpaces("t%_\%\e%_\%\s%_%t"), "test")
+
 
 def fivePlayerSetup(num=5):
     G = GameState(numberOfPlayers=num)
