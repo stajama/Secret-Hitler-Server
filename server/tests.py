@@ -155,7 +155,9 @@ class testing(TestCase):
         clearAll()
 
     def test_cleanSpaces(self):
-        self.assertEqual(cleanSpaces("t%_\%\e%_\%\s%_%t"), "test")
+        self.assertEqual(cleanSpaces("t%_%e%_%s%_%t"), "t e s t")
+        self.assertEqual(cleanSpaces("test"), "test")
+        self.assertEqual(cleanSpaces("Jim%_%Bob"), "Jim Bob")
 
 
 def fivePlayerSetup(num=5):
