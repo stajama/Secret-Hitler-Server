@@ -1013,8 +1013,8 @@ def noZombiePresident():
     return
 
 def cleanSpaces(input):
-    while input.find("%_%") != -1:
-        input = input[ : input.find("%_%")] + " " + input[input.find("%_%") + 3 : ]
+    while input.find("_") != -1:
+        input = input[ : input.find("_")] + " " + input[input.find("_") + 1 : ]
     return input
 
 ################################### DEBUG TOOLS ################################
