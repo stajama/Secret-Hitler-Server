@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 
 from .models import Player, GameState, Voting, PolicyDeck, DiscardPile, PresidentQueue, Confirmation
+from .debug_suite import *
 
 import time
 import random
@@ -135,10 +136,12 @@ def policyPresidentDraw(request, id):
             hand[i] = drawCard()
         hand['information'] = 'Select a policy card to discard. The remaining cards will be passed to the Chancellor.'
         hand['wait'] = ''
+        hand["statusID"] = GameState.objects.all()[0].statusID
         return JsonResponse(hand)
     else:
         information = {}
         information['wait'] = f"Waiting for President {findCurrentPresident(True).name} to select policies."
+        information["statusID"] = GameState.objects.all()[0].statusID
         return JsonResponse(information)
 
 def policyPresidentSelect(request, id, passing1, passing2, discarded):
@@ -182,6 +185,7 @@ def policyChancellorDraw(request, id):
         else:
             hand["veto"] = False
             hand["vetoText"] = ""
+        hand["statusID"] = GameState.objects.all()[0].statusID
         return JsonResponse(hand)
     else:
         G = GameState.objects.all()[0]
@@ -190,6 +194,7 @@ def policyChancellorDraw(request, id):
             information['wait'] = "The President has declined the Chancellor's request to veto the current agenda. The Chancellor MUST select a policy to enact."
         else:
             information['wait'] = f"Waiting for Chancellor {findCurrentChancellor().name} to select a policy."
+        information["statusID"] = GameState.objects.all()[0].statusID
         return JsonResponse(information)
 
 def policyChancellorSelects(request, id, passCard, discard):
@@ -217,11 +222,16 @@ def policyChancellorVeto(request, id):
 def policyVetoPresident(request, id):
     """Should load only for president on statusID 11. Chancellor has requested a 
     veto and requires presidential approval."""
+    """In 3/19 refactor, this view is now called by everyone on statusID 11, 
+    returns a JSON response, only presidential player gets selection options."""
     if id == findCurrentPresident(True).id:
-        return HttpResponse("Chancellor {0} has requested to veto the current set of policies. Do you accept?"
-           .format(findCurrentChancellor().name))
+        return JsonResponse({"wait": "", 
+                            "information": f'Chancellor {findCurrentChancellor().name} has requested to veto the current set of policies. Do you accept?'}
+                            "statusID": GameState.objects.all()[0].statusID)
     else:
-        return HttpResponse("Awaiting president response")
+        return JsonResponse({"wait": f'Chancellor {findCurrentChancellor().name} has requested to veto the current set of policies. Awaiting the President\'s approval',
+                             "information": ""}
+                             "statusID": GameState.objects.all()[0].statusID)
 
 def policyVetoChoice(request, id, choice):  # choice will probably have to be a binary.
     """View called by president veto yes/no button. (url/choice [0, 1]). Updates 
@@ -1137,3 +1147,7 @@ lists you as dead, all of your submission-client-side buttons should be
 disabled. The server is already only expecting input from the current living
 number of players save for confirmation pages (dead players get to look on but
 can not interact).'''
+
+def mockData2(request):
+    debugTests.appMockUpTest1()
+    return HttpResponse('')

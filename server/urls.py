@@ -37,5 +37,6 @@ urlpatterns = [
 
     # extra URLs for debugging.
     path('debug/mockData1', views.mockData1),
+    path('debug/mockData2', views.mockData2),
 
 ]

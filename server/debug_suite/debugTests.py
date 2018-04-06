@@ -15,7 +15,7 @@ def appMockUpTest1():
     to simulate other players online."""
     a = TestPlayer('a')
     for i in range(4):
-        a.client_call_for_http('client/join_game/' + str(i))
+        a.client_call_for_http('client/join_game/player' + str(i))
     return True
 
 if __name__ == '__main__':
