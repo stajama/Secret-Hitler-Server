@@ -11,13 +11,13 @@ class TestPlayer(object):
         self.ids = None
 
     def client_call_for_http(self, uri):
-        x = requests.get('https://secret-ravine-44641.herokuapp.com/sh/' + uri).text
+        x = requests.get('http://127.0.0.1:8000/sh/' + uri).text
         y = bs4(x, "lxml")
         y = y.body.p.text
         return y
 
     def client_call_for_json(self, uri):
-        x = requests.get('https://secret-ravine-44641.herokuapp.com/sh/' + uri)
+        x = requests.get('http://127.0.0.1:8000/sh/' + uri)
         # print(x, type(x))
         try:
             return x.json()
@@ -25,3 +25,10 @@ class TestPlayer(object):
             print(x)
             raise ValueError('Something went wrong with the {0} request.'.format(uri))
 
+    def dryCall(self, uri):
+        requests.get('http://127.0.0.1:8000/sh/' + uri)
+        return
+
+
+# https://secret-ravine-44641.herokuapp.com/sh/
+# http://127.0.0.1:8000/sh/

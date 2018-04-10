@@ -14,51 +14,6 @@ class testing(TestCase):
     def tearDown(self):
         clearAll()
 
-    def test_views_findCurrentPresident(self):
-        """findCurrentPresident() is used as a quick helper function to pull
-        the current presidents Player database information. Allows quick
-        access to president's name and id as well as easy identify verification
-        to prevent bugs or access to president only views by non-presidents."""
-
-        fivePlayerSetup()
-        P = Player.objects.all()
-        example = Player.objects.get(pk=P[0].id)
-        example.president = True
-        example.save()
-        self.assertEqual(findCurrentPresident(), P[0])
-        example = Player.objects.get(pk=P[1].id)
-        example.president = True
-        example.save()
-        with self.assertRaises(AssertionError):
-            findCurrentPresident()
-        example.president = False
-        example.save()
-        example = Player.objects.get(pk=P[0].id)
-        example.president = False
-        example.save()
-        with self.assertRaises(ValueError):
-            findCurrentPresident()
-
-        """post function: the post function was added and a later refactor.
-        The president's role is changed immediately after a successful election
-        to previousPresident. This makes it easier to track term-limited 
-        layers while keeping the current President status clean for possible
-        failed elections. The problem presented is that post-election, all
-        findCurrentPresident checks require the previousPresident, not the
-        current President (whomever happens to be at the top of the PresidentQueue)."""
-        example.president = True
-        example.save()
-        self.assertEqual(findCurrentPresident(), P[0])
-        example.previousPresident = True
-        example.president = False
-        example.save()
-        example = Player.objects.get(pk=P[1].id)
-        example.president = True
-        example.save()
-        self.assertEqual(findCurrentPresident(), P[1])
-        self.assertEqual(findCurrentPresident(True), P[0])
-        clearAll()
-
     def test_cyclePresident(self):
         """cyclePresident() is a helper function that takes the current next
         in line player in the PresidentQueue, sets there president value to
@@ -117,41 +72,6 @@ class testing(TestCase):
         self.assertEqual(len(PolicyDeck.objects.all()), 0)
         self.assertEqual(hold.count('Liberal'), 6)
         self.assertEqual(hold.count('Fascist'), 11)
-        clearAll()
-
-    def test_policyPresidentDraw(self):
-        """policyPresidentDraw() is a client-facing view. It first does an
-        identity check to assure only the current president (previousPresident
-        technically) has access to the three policy cards drawn from the top
-        of the deck. It then returns a JsonResponse object pairing the cards
-        with an index."""
-        fivePlayerSetup()
-        setUpMatch()
-        setUpPolicyDeck()
-        pres = Player.objects.get(name='test0')
-        pres.previousPresident = True
-        pres.save()
-        information = policyPresidentDraw(None, pres.id).content
-        information = information.decode('utf8')
-        # print(information, type(information))
-        self.assertEqual(len(PolicyDeck.objects.all()), 14)
-        notPres = Player.objects.get(name='test1')
-        notPres.president = True
-        with self.assertRaises(AssertionError):
-            policyPresidentDraw(None, notPres.id)
-        information = policyPresidentDraw(None, pres.id).content
-        self.assertEqual(len(PolicyDeck.objects.all()), 11)
-        information = policyPresidentDraw(None, pres.id).content
-        self.assertEqual(len(PolicyDeck.objects.all()), 8)
-        information = policyPresidentDraw(None, pres.id).content
-        self.assertEqual(len(PolicyDeck.objects.all()), 5)
-        information = policyPresidentDraw(None, pres.id).content
-        self.assertEqual(len(PolicyDeck.objects.all()), 2)
-        for i in range(15):
-            x = DiscardPile(card="testLiberal")
-            x.save()
-        information = policyPresidentDraw(None, pres.id).content
-        self.assertEqual(len(PolicyDeck.objects.all()), 14)
         clearAll()
 
     def test_cleanSpaces(self):

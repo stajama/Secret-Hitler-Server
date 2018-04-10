@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .models import Player, GameState, Voting, PolicyDeck, DiscardPile, PresidentQueue, Confirmation
 from .debug_suite import *
+from . import quickDebug
 
 import time
 import random
@@ -226,12 +227,12 @@ def policyVetoPresident(request, id):
     returns a JSON response, only presidential player gets selection options."""
     if id == findCurrentPresident(True).id:
         return JsonResponse({"wait": "", 
-                            "information": f'Chancellor {findCurrentChancellor().name} has requested to veto the current set of policies. Do you accept?'}
-                            "statusID": GameState.objects.all()[0].statusID)
+                            "information": f'Chancellor {findCurrentChancellor().name} has requested to veto the current set of policies. Do you accept?',
+                            "statusID": GameState.objects.all()[0].statusID})
     else:
         return JsonResponse({"wait": f'Chancellor {findCurrentChancellor().name} has requested to veto the current set of policies. Awaiting the President\'s approval',
-                             "information": ""}
-                             "statusID": GameState.objects.all()[0].statusID)
+                             "information": "",
+                             "statusID": GameState.objects.all()[0].statusID})
 
 def policyVetoChoice(request, id, choice):  # choice will probably have to be a binary.
     """View called by president veto yes/no button. (url/choice [0, 1]). Updates 
@@ -1150,4 +1151,8 @@ can not interact).'''
 
 def mockData2(request):
     debugTests.appMockUpTest1()
+    return HttpResponse('')
+
+def mockData3(request):
+    quickDebug.mockData1()
     return HttpResponse('')
