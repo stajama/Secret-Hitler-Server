@@ -56,175 +56,64 @@ def appTestHelper1():
     e.client_call_for_http(f'client/policy_result_confirm/{e.ids}')
     waitForIt()
 
-    pauseForAppTesting()
+    pauseForAppTesting("confirm policy result")
     
-    # ###########START OF GAME LOOP##################
-    # # turn 2: b is president, b elections c, all vote ya, b gives c 1 lib/1 fas, c choses the lib. All is well.
-    # check = b.client_call_for_json(f'client/nominate_chancellor/{b.ids}')
-    # others = [a, c, d, e]
-    # for i in others:
-    #     print(i.ids, i.id)
-    #     if i.ids not in check:
-    #         print('What was got', check)
-    #         raise AssertionError("president's json nomination has problem1")
-    #     if check[i.ids] != i.name:
-    #         print('What was got', check)
-    #         raise AssertionError("president's json nomination has problem2")
-    # # if a.ids in check:
-    # #     raise AssertionError("former president should not be available for nomination.")
-    # # TODO - Additional checks on received JSON should probably be made...
-    # check = a.client_call_for_json(f'client/nominate_chancellor/{a.ids}')
-    # if check != {'wait': '1'}:
-    #     raise AssertionError("problem with non-president json response.")
-    # check = c.client_call_for_json(f'client/nominate_chancellor/{c.ids}')
-    # if check != {'wait': '1'}:
-    #     raise AssertionError("problem with non-president json response.")
-    # check = d.client_call_for_json(f'client/nominate_chancellor/{d.ids}')
-    # if check != {'wait': '1'}:
-    #     raise AssertionError("problem with non-president json response.")
-    # check = e.client_call_for_json(f'client/nominate_chancellor/{e.ids}')
-    # if check != {'wait': '1'}:
-    #     raise AssertionError("problem with non-president json response.")
-    # waitForIt()
-    # check = b.client_call_for_http(f'client/nominate_chancellor_order/{b.ids}/{c.ids}')
-    # if check != "confirm":
-    #     raise AssertionError('nomination order not confirmed')
-    # waitForIt()
+    ###########START OF GAME LOOP##################
+    # turn 2: b is president, b elections c, all vote ya, b gives c 1 lib/1 fas, c choses the lib. All is well.
+
+    check = b.client_call_for_http(f'client/nominate_chancellor_order/{b.ids}/{c.ids}')
+    if check != "confirm":
+        raise AssertionError('nomination order not confirmed')
+    waitForIt()
 
 
-    # statusInfoCheck5player1(6, f"{b.name} nominated {c.name} for Chancellor.")
-    # # updateGStatusUpdate(f"{findCurrentPresident().name} nominated {Player.objects.get(pk=selected).name} for Chancellor.")
 
-    # waitForIt()
-    # a.client_call_for_http(f'client/submit_vote/{a.ids}/1')
-    # waitForIt()
-    # b.client_call_for_http(f'client/submit_vote/{b.ids}/1')
-    # waitForIt()
-    # c.client_call_for_http(f'client/submit_vote/{c.ids}/1')
-    # waitForIt()
-    # d.client_call_for_http(f'client/submit_vote/{d.ids}/1')
-    # waitForIt()
-    # e.client_call_for_http(f'client/submit_vote/{e.ids}/1')
-    # waitForIt()
+    waitForIt()
+    b.client_call_for_http(f'client/submit_vote/{b.ids}/1')
+    waitForIt()
+    c.client_call_for_http(f'client/submit_vote/{c.ids}/1')
+    waitForIt()
+    d.client_call_for_http(f'client/submit_vote/{d.ids}/1')
+    waitForIt()
+    e.client_call_for_http(f'client/submit_vote/{e.ids}/1')
+    waitForIt()
+    
+    pauseForAppTesting("vote yes for President Byron and Chancellor Charles")
 
-    # waitForIt()
-    # waitForIt()
-    # statusInfoCheck5player1(99, f"Vote passed. President {b.name} and Chancellor {c.name} will now enact a policy decision.")
+    pauseForAppTesting("confirm vote results")
 
-    # waitForIt()
-    # checkAgainst = {'a': True, 'b': True, "c": True, 'd': True, 'e': True, 'result': 'The vote passed.'}
-    # check = a.client_call_for_json(f'client/show_all_votes')
-    # if check != checkAgainst:
-    #     raise AssertionError('vote check problem. ' + str(check))
-    # waitForIt()
-    # check = a.client_call_for_http(f'client/vote_show_confirmation/{a.ids}')
-    # if check != 'confirm':
-    #     raise AssertionError('vote check confirmation problem. ' + str(check))
-    # waitForIt()
-    # check = b.client_call_for_http(f'client/vote_show_confirmation/{b.ids}')
-    # if check != 'confirm':
-    #     raise AssertionError('vote check confirmation problem. ' + str(check))
-    # waitForIt()
-    # check = c.client_call_for_http(f'client/vote_show_confirmation/{c.ids}')
-    # if check != 'confirm':
-    #     raise AssertionError('vote check confirmation problem. ' + str(check))
-    # waitForIt()
-    # check = d.client_call_for_http(f'client/vote_show_confirmation/{d.ids}')
-    # if check != 'confirm':
-    #     raise AssertionError('vote check confirmation problem. ' + str(check))
-    # waitForIt()
-    # check = e.client_call_for_http(f'client/vote_show_confirmation/{e.ids}')
-    # if check != 'confirm':
-    #     raise AssertionError('vote check confirmation problem. ' + str(check))
-    # waitForIt()
+    pauseForAppTesting("check app for wrong hidden information")
 
-    # statusInfoCheck5player1(9, f"Vote passed. President {b.name} and Chancellor {c.name} will now enact a policy decision.")
+    check = b.client_call_for_http(f'client/president_play/{b.ids}/Liberal/Fascist/Liberal')
+    if check != "confirm":
+        print(check)
+        raise AssertionError('president card selection problem')
+    waitForIt()
 
-    # waitForIt()
-    # check = b.client_call_for_json(f'client/president_draw/{b.ids}')
-    # if len(check) != 4:
-    #     print(check)
-    #     raise AssertionError("check the president draw cards, something is probably wrong.")
-    # waitForIt()
-    # check = a.client_call_for_json(f'client/president_draw/{a.ids}')
-    # if check != {'wait': f"Waiting for President {b.name} to select policies."}:
-    #     raise AssertionError()
-    # waitForIt()
-    # check = c.client_call_for_json(f'client/president_draw/{c.ids}')
-    # if check != {'wait': f"Waiting for President {b.name} to select policies."}:
-    #     raise AssertionError()
-    # waitForIt()
-    # check = d.client_call_for_json(f'client/president_draw/{d.ids}')
-    # if check != {'wait': f"Waiting for President {b.name} to select policies."}:
-    #     raise AssertionError()    
-    # waitForIt()
-    # check = e.client_call_for_json(f'client/president_draw/{e.ids}')
-    # if check != {'wait': f"Waiting for President {b.name} to select policies."}:
-    #     raise AssertionError()
-    # waitForIt()
+   
+    check = c.client_call_for_json(f'client/chancellor_draw/{c.ids}')
+    if check != {'1': "Liberal", "2": "Fascist", 'information': "Select a policy card to enact.", 'veto': False, 'vetoText': '', "statusID": 10, "wait": ""}:
+        print(check)
+        raise AssertionError('chancellor draw problem')
 
-    # check = b.client_call_for_http(f'client/president_play/{b.ids}/Liberal/Fascist/Liberal')
-    # if check != "confirm":
-    #     print(check)
-    #     raise AssertionError('president card selection problem')
-    # waitForIt()
+    pauseForAppTesting("waiting for chancellor check-app")
 
-    # statusInfoCheck5player1(10, 'Waiting for the Chancellor to select a policy.')
+    check = c.client_call_for_http(f'client/chancellor_play/{c.ids}/Liberal/Fascist')
+    if check != 'confirm':
+        print("error headsup", check)
+        raise AssertionError("something wrong with chancellor play")
 
-    # check = c.client_call_for_json(f'client/chancellor_draw/{c.ids}')
-    # if check != {'1': "Liberal", "2": "Fascist", 'information': "Select a policy card to enact.", 'veto': False, 'vetoText': ''}:
-    #     print(check)
-    #     raise AssertionError('chancellor draw problem')
-    # check = a.client_call_for_json(f'client/chancellor_draw/{a.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {c.name} to select a policy."}:
-    #     raise AssertionError(str(check))
-    # waitForIt()
-    # check = b.client_call_for_json(f'client/chancellor_draw/{b.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {c.name} to select a policy."}:
-    #     raise AssertionError(check)
-    # waitForIt()
-    # check = d.client_call_for_json(f'client/chancellor_draw/{d.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {c.name} to select a policy."}:
-    #     raise AssertionError()
-    # waitForIt()
-    # check = e.client_call_for_json(f'client/chancellor_draw/{e.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {c.name} to select a policy."}:
-    #     raise AssertionError()
-    # waitForIt()
+    pauseForAppTesting("look at confirmation page.")
 
-    # check = c.client_call_for_http(f'client/chancellor_play/{c.ids}/Liberal/Fascist')
-    # if check != 'confirm':
-    #     print("error headsup", check)
-    #     raise AssertionError("something wrong with chancellor play")
+    a.client_call_for_http(f'client/policy_result_confirm/{a.ids}')
+    b.client_call_for_http(f'client/policy_result_confirm/{b.ids}')
+    c.client_call_for_http(f'client/policy_result_confirm/{c.ids}')
+    d.client_call_for_http(f'client/policy_result_confirm/{d.ids}')
+    e.client_call_for_http(f'client/policy_result_confirm/{e.ids}')
+    waitForIt()
 
-    # statusInfoCheck5player1(97, "A Liberal policy was enacted!")
-
-    # waitForIt()
-    # if a.client_call_for_http(f'client/policy_result_review') != 'confirm':
-    #     raise AssertionError('revolt')
-    # waitForIt()
-    # if b.client_call_for_http(f'client/policy_result_review') != 'confirm':
-    #     raise AssertionError('revolt')
-    # waitForIt()
-    # if c.client_call_for_http(f'client/policy_result_review') != 'confirm':
-    #     raise AssertionError('revolt')
-    # waitForIt()
-    # if d.client_call_for_http(f'client/policy_result_review') != 'confirm':
-    #     raise AssertionError('revolt')
-    # waitForIt()
-    # if e.client_call_for_http(f'client/policy_result_review') != 'confirm':
-    #     raise AssertionError('revolt')
-    # waitForIt()
-
-    # a.client_call_for_http(f'client/policy_result_confirm/{a.ids}')
-    # b.client_call_for_http(f'client/policy_result_confirm/{b.ids}')
-    # c.client_call_for_http(f'client/policy_result_confirm/{c.ids}')
-    # d.client_call_for_http(f'client/policy_result_confirm/{d.ids}')
-    # e.client_call_for_http(f'client/policy_result_confirm/{e.ids}')
-    # waitForIt()
-
-    # waitForIt()
-    # statusInfoCheck5player1(3, f'The current President is {c.name}. Waiting for the President to nominate a Chancellor.')
+    waitForIt()
+    statusInfoCheck5player1(3, f'The current President is {c.name}. Waiting for the President to nominate a Chancellor.')
     
     # ###########START OF GAME LOOP##################
     # # turn 3: c is president, c elections d, all vote ya, c gives d 1 lib/1 fas, d choses the lib. All is well.
@@ -280,7 +169,7 @@ def appTestHelper1():
     # statusInfoCheck5player1(99, f"Vote passed. President {c.name} and Chancellor {d.name} will now enact a policy decision.")
 
     # waitForIt()
-    # checkAgainst = {'a': True, 'b': True, "c": True, 'd': True, 'e': True, 'result': 'The vote passed.'}
+    # checkAgainst = {'number of votes': 5, 'a': True, 'b': True, "c": True, 'd': True, 'e': True, 'result': 'The vote passed.'}
     # check = a.client_call_for_json(f'client/show_all_votes')
     # if check != checkAgainst:
     #     raise AssertionError('vote check problem. ' + str(check))
@@ -310,24 +199,27 @@ def appTestHelper1():
 
     # waitForIt()
     # check = c.client_call_for_json(f'client/president_draw/{c.ids}')
-    # if len(check) != 4:
+    # if check['wait'] != "" or check['information'] != 'Select a policy card to discard. The remaining cards will be passed to the Chancellor.' or \
+    #         check["statusID"] != 9 or not (check["1"] == "Liberal" or check["1"] == "Fascist") or \
+    #         not (check["2"] == "Liberal" or check["2"] == "Fascist") or \
+    #         not (check["3"] == "Liberal" or check["3"] == "Fascist"):        
     #     print(check)
     #     raise AssertionError("check the president draw cards, something is probably wrong.")
     # waitForIt()
     # check = a.client_call_for_json(f'client/president_draw/{a.ids}')
-    # if check != {'wait': f"Waiting for President {c.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {c.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()
     # waitForIt()
     # check = b.client_call_for_json(f'client/president_draw/{b.ids}')
-    # if check != {'wait': f"Waiting for President {c.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {c.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()
     # waitForIt()
     # check = d.client_call_for_json(f'client/president_draw/{d.ids}')
-    # if check != {'wait': f"Waiting for President {c.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {c.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()    
     # waitForIt()
     # check = e.client_call_for_json(f'client/president_draw/{e.ids}')
-    # if check != {'wait': f"Waiting for President {c.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {c.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()
     # waitForIt()
 
@@ -340,23 +232,23 @@ def appTestHelper1():
     # statusInfoCheck5player1(10, 'Waiting for the Chancellor to select a policy.')
 
     # check = d.client_call_for_json(f'client/chancellor_draw/{d.ids}')
-    # if check != {'1': "Liberal", "2": "Fascist", 'information': "Select a policy card to enact.", 'veto': False, 'vetoText': ''}:
+    # if check != {'1': "Liberal", "2": "Fascist", 'information': "Select a policy card to enact.", 'veto': False, 'vetoText': '', "statusID": 10, 'wait': ''}:
     #     print(check)
     #     raise AssertionError('chancellor draw problem')
     # check = a.client_call_for_json(f'client/chancellor_draw/{a.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {d.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {d.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError(str(check))
     # waitForIt()
     # check = b.client_call_for_json(f'client/chancellor_draw/{b.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {d.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {d.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError(check)
     # waitForIt()
     # check = c.client_call_for_json(f'client/chancellor_draw/{c.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {d.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {d.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError()
     # waitForIt()
     # check = e.client_call_for_json(f'client/chancellor_draw/{e.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {d.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {d.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError()
     # waitForIt()
 
@@ -448,7 +340,7 @@ def appTestHelper1():
     # statusInfoCheck5player1(99, f"Vote passed. President {d.name} and Chancellor {e.name} will now enact a policy decision.")
 
     # waitForIt()
-    # checkAgainst = {'a': True, 'b': True, "c": True, 'd': True, 'e': True, 'result': 'The vote passed.'}
+    # checkAgainst = {'a': True, 'b': True, "c": True, 'd': True, 'e': True, 'result': 'The vote passed.', "number of votes": 5}
     # check = a.client_call_for_json(f'client/show_all_votes')
     # if check != checkAgainst:
     #     raise AssertionError('vote check problem. ' + str(check))
@@ -478,24 +370,27 @@ def appTestHelper1():
 
     # waitForIt()
     # check = d.client_call_for_json(f'client/president_draw/{d.ids}')
-    # if len(check) != 4:
+    # if check['wait'] != "" or check['information'] != 'Select a policy card to discard. The remaining cards will be passed to the Chancellor.' or \
+    #         check["statusID"] != 9 or not (check["1"] == "Liberal" or check["1"] == "Fascist") or \
+    #         not (check["2"] == "Liberal" or check["2"] == "Fascist") or \
+    #         not (check["3"] == "Liberal" or check["3"] == "Fascist"):
     #     print(check)
     #     raise AssertionError("check the president draw cards, something is probably wrong.")
     # waitForIt()
     # check = a.client_call_for_json(f'client/president_draw/{a.ids}')
-    # if check != {'wait': f"Waiting for President {d.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {d.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()
     # waitForIt()
     # check = b.client_call_for_json(f'client/president_draw/{b.ids}')
-    # if check != {'wait': f"Waiting for President {d.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {d.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()
     # waitForIt()
     # check = c.client_call_for_json(f'client/president_draw/{c.ids}')
-    # if check != {'wait': f"Waiting for President {d.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {d.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()    
     # waitForIt()
     # check = e.client_call_for_json(f'client/president_draw/{e.ids}')
-    # if check != {'wait': f"Waiting for President {d.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {d.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()
     # waitForIt()
 
@@ -508,23 +403,23 @@ def appTestHelper1():
     # statusInfoCheck5player1(10, 'Waiting for the Chancellor to select a policy.')
 
     # check = e.client_call_for_json(f'client/chancellor_draw/{e.ids}')
-    # if check != {'1': "Liberal", "2": "Fascist", 'information': "Select a policy card to enact.", 'veto': False, 'vetoText': ''}:
+    # if check != {'1': "Liberal", "2": "Fascist", 'information': "Select a policy card to enact.", 'veto': False, 'vetoText': '', "statusID": 10, 'wait': ''}:
     #     print(check)
     #     raise AssertionError('chancellor draw problem')
     # check = a.client_call_for_json(f'client/chancellor_draw/{a.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {e.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {e.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError(str(check))
     # waitForIt()
     # check = b.client_call_for_json(f'client/chancellor_draw/{b.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {e.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {e.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError(check)
     # waitForIt()
     # check = c.client_call_for_json(f'client/chancellor_draw/{c.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {e.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {e.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError()
     # waitForIt()
     # check = d.client_call_for_json(f'client/chancellor_draw/{d.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {e.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {e.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError()
     # waitForIt()
 
@@ -616,7 +511,7 @@ def appTestHelper1():
     # statusInfoCheck5player1(99, f"Vote passed. President {e.name} and Chancellor {a.name} will now enact a policy decision.")
 
     # waitForIt()
-    # checkAgainst = {'a': True, 'b': True, "c": True, 'd': True, 'e': True, 'result': 'The vote passed.'}
+    # checkAgainst = {'a': True, 'b': True, "c": True, 'd': True, 'e': True, 'result': 'The vote passed.', "number of votes": 5}
     # check = a.client_call_for_json(f'client/show_all_votes')
     # if check != checkAgainst:
     #     raise AssertionError('vote check problem. ' + str(check))
@@ -646,24 +541,27 @@ def appTestHelper1():
 
     # waitForIt()
     # check = e.client_call_for_json(f'client/president_draw/{e.ids}')
-    # if len(check) != 4:
+    # if check['wait'] != "" or check['information'] != 'Select a policy card to discard. The remaining cards will be passed to the Chancellor.' or \
+    #         check["statusID"] != 9 or not (check["1"] == "Liberal" or check["1"] == "Fascist") or \
+    #         not (check["2"] == "Liberal" or check["2"] == "Fascist") or \
+    #         not (check["3"] == "Liberal" or check["3"] == "Fascist"):        
     #     print(check)
     #     raise AssertionError("check the president draw cards, something is probably wrong.")
     # waitForIt()
     # check = a.client_call_for_json(f'client/president_draw/{a.ids}')
-    # if check != {'wait': f"Waiting for President {e.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {e.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()
     # waitForIt()
     # check = b.client_call_for_json(f'client/president_draw/{b.ids}')
-    # if check != {'wait': f"Waiting for President {e.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {e.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()
     # waitForIt()
     # check = d.client_call_for_json(f'client/president_draw/{d.ids}')
-    # if check != {'wait': f"Waiting for President {e.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {e.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()    
     # waitForIt()
     # check = c.client_call_for_json(f'client/president_draw/{c.ids}')
-    # if check != {'wait': f"Waiting for President {e.name} to select policies."}:
+    # if check != {'wait': f"Waiting for President {e.name} to select policies.", "statusID": 9}:
     #     raise AssertionError()
     # waitForIt()
 
@@ -676,23 +574,23 @@ def appTestHelper1():
     # statusInfoCheck5player1(10, 'Waiting for the Chancellor to select a policy.')
 
     # check = a.client_call_for_json(f'client/chancellor_draw/{a.ids}')
-    # if check != {'1': "Liberal", "2": "Fascist", 'information': "Select a policy card to enact.", 'veto': False, 'vetoText': ''}:
+    # if check != {'1': "Liberal", "2": "Fascist", 'information': "Select a policy card to enact.", 'veto': False, 'vetoText': '', "statusID": 10, 'wait': ''}:
     #     print(check)
     #     raise AssertionError('chancellor draw problem')
     # check = d.client_call_for_json(f'client/chancellor_draw/{d.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {a.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {a.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError(str(check))
     # waitForIt()
     # check = b.client_call_for_json(f'client/chancellor_draw/{b.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {a.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {a.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError(check)
     # waitForIt()
     # check = c.client_call_for_json(f'client/chancellor_draw/{c.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {a.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {a.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError()
     # waitForIt()
     # check = e.client_call_for_json(f'client/chancellor_draw/{e.ids}')
-    # if check != {'wait': f"Waiting for Chancellor {a.name} to select a policy."}:
+    # if check != {'wait': f"Waiting for Chancellor {a.name} to select a policy.", "statusID": 10}:
     #     raise AssertionError()
     # waitForIt()
 
