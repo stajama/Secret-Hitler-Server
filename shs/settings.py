@@ -74,18 +74,18 @@ WSGI_APPLICATION = 'shs.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-if "TRAVIS" in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE':   'django.db.backends.postgresql_psycopg2',
-            'NAME':     'travisci',
-            'USER':     'postgres',
-            'PASSWORD': '',
-            'HOST':     'localhost',
-            'PORT':     '',
-        }
-    }
-elif "HEROKU" in os.environ:
+# if "TRAVIS" in os.environ:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE':   'django.db.backends.postgresql_psycopg2',
+#             'NAME':     'travisci',
+#             'USER':     'postgres',
+#             'PASSWORD': '',
+#             'HOST':     'localhost',
+#             'PORT':     '',
+#         }
+#     }
+if "HEROKU" in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
