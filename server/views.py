@@ -13,6 +13,7 @@ import bleach
 
 logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s \
     - %(levelname)s - %(message)s')
+logging.disable(logging.INFO)
 
 # Create your views here.
 
