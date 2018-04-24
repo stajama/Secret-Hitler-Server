@@ -153,7 +153,7 @@ def policyPresidentSelect(request, id, passing1, passing2, discarded):
     GameState.cardsForChancellor1/cardsForChancellor2 slots. Updates statusID to allow
     chancellor access to policyChancellorDraw()."""
     debug_identity_check(id, post=True)
-    logging.error(f"Catastrophe: policyPresidentSelect: passing1 = {passing1}, passing2 = {passing2}, discarded = {discarded}")
+    logging.warning(f"Catastrophe: policyPresidentSelect: passing1 = {passing1}, passing2 = {passing2}, discarded = {discarded}")
     DP = DiscardPile(card=discarded)
     logging.debug("policyPresidentSelect: Something wrong with DB? - " + DP.card + " " + str(type(DP.card)))
     DP.save()
@@ -203,7 +203,7 @@ def policyChancellorSelects(request, id, passCard, discard):
     """If the veto button is not selected, this view if called. Discarded the non-selected
     card to the DiscardPile, plays the selected card. Returns statusID to 3 to restart gameloop."""
     debug_identity_check(id, chancellor=True)
-    logging.error(f"Catastrophe: policyChancellorSelect: passCard = {passCard}, discard = {discard}")
+    logging.warning(f"Catastrophe: policyChancellorSelect: passCard = {passCard}, discard = {discard}")
 
     DP = DiscardPile(card=discard)
     logging.debug("policyChancellorSelect: Something wrong with DB? - " + DP.card + " --- " + str(type(DP.card)))
@@ -301,7 +301,7 @@ def executiveExecutionOrder(request, id, selected):
     if unluckyOne.president:
         unluckyOne.president = False
         cyclePresident()
-        logging.error('CHECK PRESIDENT QUEUE FOR ZOMBIES')
+        logging.warning('CHECK PRESIDENT QUEUE FOR ZOMBIES')
         # debug_log_dump(playerDB=True, presidentQueue=True)
     logging.debug("in executiveExecutionOrder(), info for unluckyone: " + unluckyOne.name + ' ' + str(unluckyOne.id))
     updateGStatusUpdate(f"The President has selected {unluckyOne.name} for immediate execution.")
@@ -435,7 +435,7 @@ def getStatus(id):
     GameState.statusID, and GameState.statusUdpdate. Also includes secret
     information for Fascist players. Packaged in JsonResponse object."""
     logging.debug(str(id))
-    logging.error('Start of getStatus() possible error here.')
+    logging.warning('Start of getStatus() possible error here.')
     debug_log_dump(playerDB=True, gameState=True)
     G = GameState.objects.all()[0]
     if G.statusID == 2:
@@ -713,22 +713,22 @@ def isGameOver():
     Chancellor after 3 Fascist policies have been enacted, has Hitler been killed."""
     G = GameState.objects.all()[0]
     if G.fasPolicyCount >= 6:
-        logging.error('Game over for fascist policy win. state should be 100')
+        logging.warning('Game over for fascist policy win. state should be 100')
         updateGStatusUpdate("The Fascists have achieved a policy victory.")
         updateGStatusID(100) # New status for Game Over.
         return True
     if G.fasPolicyCount >= 3 and findCurrentChancellor().role == "Hitler":
-        logging.error('Game over for fascist election win. state should be 100')
+        logging.warning('Game over for fascist election win. state should be 100')
         updateGStatusUpdate("The Fascists have achieved victory by getting Hitler elected Chancellor.")
         updateGStatusID(100) # New status for Game Over.
         return True
     if not Player.objects.get(pk=findPlayerID(role="Hitler")).isAlive:
-        logging.error('Game over for liberal "fuck Hitler" win. state should be 100')
+        logging.warning('Game over for liberal "fuck Hitler" win. state should be 100')
         updateGStatusUpdate("The Liberals have achieved victory by assassinating Hitler.")
         updateGStatusID(100) # New status for Game Over.
         return True
     if G.libPolicyCount >= 5:
-        logging.error('Game over for liberal policy win. state should be 100')
+        logging.warning('Game over for liberal policy win. state should be 100')
         updateGStatusUpdate("The Liberals have achieved a policy victory.")
         updateGStatusID(100) # New status for Game Over.
         return True
@@ -826,18 +826,18 @@ def cyclePresident():
     """Worker function. Updates Player database with current president, skips
     over any player who is not alive. Also filters out the special election
     presidential candidate by not adding special cases back into the queue."""
-    logging.error('start of cyclePresident()')
+    logging.warning('start of cyclePresident()')
     # debug_log_dump(playerDB=True)
     hold = [(i.playerID, i.special) for i in PresidentQueue.objects.all()]
     PresidentQueue.objects.all().delete()
     x = Player.objects.get(pk=hold[0][0])
     special = hold[0][1]
     while not x.isAlive:
-        logging.error("cyclePresident(): someone is dead: " + f'{x.name} is not alive. Cycling to next presidential candidate.')
+        logging.warning("cyclePresident(): someone is dead: " + f'{x.name} is not alive. Cycling to next presidential candidate.')
         hold.pop(0)
         x = Player.objects.get(pk=hold[0][0])
         special = hold[0][1]
-        logging.error("cyclePresident(): someone is dead2: " + f'{x.name} is the next candidate')
+        logging.warning("cyclePresident(): someone is dead2: " + f'{x.name} is the next candidate')
     x.president = True
     x.save()
     if not special:

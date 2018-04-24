@@ -324,5 +324,3 @@ def fivePlayerSetup1(num=5):
     P.party = "Fascist"
     P.save()
     return
-
-# force Git
