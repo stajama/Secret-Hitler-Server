@@ -8,5 +8,6 @@ services:
 before_script:
   - python manage.py migrate
   - python manage.py makemigrations
+  - python x.py
   - python manage.py migrate
 script: python manage.py test
