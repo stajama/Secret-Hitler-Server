@@ -105,7 +105,6 @@ def appTestHelper1():
 
     pauseForAppTesting("look at confirmation page.")
 
-    a.client_call_for_http(f'client/policy_result_confirm/{a.ids}')
     b.client_call_for_http(f'client/policy_result_confirm/{b.ids}')
     c.client_call_for_http(f'client/policy_result_confirm/{c.ids}')
     d.client_call_for_http(f'client/policy_result_confirm/{d.ids}')

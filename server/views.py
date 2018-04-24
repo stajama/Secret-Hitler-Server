@@ -62,7 +62,7 @@ def client_status(request, id):
     update checks."""
     # TODO (1) GameState.statusUpdate should probably be added here.
     # information = worker.getStatus(id)
-    return getStatus(id)
+    return JsonResponse(getStatus(id))
 
 def headsUpToVote(request):
     """This view, attached to statusID 6, is paired to app:activity_voting.xml. 
@@ -453,23 +453,23 @@ def getStatus(id):
     information["libPolicies"] = G.libPolicyCount
     information["electionTracker"] = G.electionTracker
     if P.role == "Liberal":
-        return JsonResponse(information)
+        return information
     elif P.role == "Hitler":
         if G.numberOfPlayers == 5 or G.numberOfPlayers == 6:
             information.setdefault("Other Fascists", "")
             for i in Player.objects.all():
                 if i.party == "Fascist" and i.role != "Hitler":
                     information["Other Fascists"] += i.name
-        return JsonResponse(information)
+        return information
     else:
         information["Hitler"] = Player.objects.get(pk=findPlayerID(role="Hitler")).name
         information["Other Fascists"] = ""
         for i in Player.objects.all():
-            if i.party == "Fascist" and i.role == "Fascist":
+            if i.party == "Fascist" and i.role == "Fascist" and i.id != P.id:
                 information["Other Fascists"] += i.name + ", "
         information["Other Fascists"] = information["Other Fascists"][ : -2] 
         # This is intended to cut off the trailing ', ' inevitable with this Fascist collection method.
-        return JsonResponse(information)
+        return information
 
 def votingMachine():
     """Worker function, collects all votes in Voting database. Returns
