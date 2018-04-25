@@ -1,3 +1,5 @@
+#!/usr/bin/env python3.6
+
 from django.test import TestCase
 
 # from .models import Player, GameState, Voting, PolicyDeck, DiscardPile, PresidentQueue
