@@ -4,6 +4,4 @@ python:
 install:
   - pip install requests
 
-script: 
-  - cd server/debug_suite/
-  - python debugTest2.py
+script: python server/debug_suite/debugTests2.py
