@@ -3,5 +3,9 @@ python:
   - "3.6"
 install:
   - pip install requests
+  - pip install html5lib
+  - pip install bs4
+  - pip install lxml
+
 
 script: python server/debug_suite/debugTests2.py
