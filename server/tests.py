@@ -13,6 +13,8 @@ class testing(TestCase):
         clearAll()
 
     def tearDown(self):
+        fivePlayerSetup()
+        print('about to tearDown: DB exists: ' + Player.objects.all()[0].name)
         clearAll()
 
     def test_cyclePresident(self):
