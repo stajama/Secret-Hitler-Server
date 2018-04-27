@@ -7,5 +7,4 @@ install:
   - pip install bs4
   - pip install lxml
 
-
-script: python server/debug_suite/debugTests2.py
+script: python server/debug_suite/debugTests2.py true

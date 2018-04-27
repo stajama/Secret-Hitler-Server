@@ -5,8 +5,9 @@ from ClientObject import TestPlayer
 import requests
 import json
 import time
+import sys
 
-def testGame1():
+def testGame1(hitServer):
     """5 player test game, responding solely to Http/Json information from server."""
 
     ###### LOCAL HELPERS ######
@@ -21,7 +22,7 @@ def testGame1():
         if check['name'] != 'c' or check['party'] != 'Liberal' or check['role'] != 'Liberal' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or "Other Fascists" in check:
             raise AssertionError("something wrong with get_status()" + str(check))
         check = d.client_call_for_json(f'client/client_status/{d.ids}')
-        if check['name'] != 'd' or check['party'] != 'Fascist' or check['role'] != 'Fascist' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Hitler'] != 'e' or check['Other Fascists'] != "d":
+        if check['name'] != 'd' or check['party'] != 'Fascist' or check['role'] != 'Fascist' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Hitler'] != 'e' or check['Other Fascists'] != "":
             raise AssertionError("something wrong with get_status()" + str(check))
         check = e.client_call_for_json(f'client/client_status/{e.ids}')
         if check['name'] != 'e' or check['party'] != 'Fascist' or check['role'] != 'Hitler' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Other Fascists'] != "d":
@@ -35,11 +36,11 @@ def testGame1():
         return 'done'
 
     ####### THE MEAT & POTATOES ##########
-    a = TestPlayer('a')
-    b = TestPlayer('b')
-    c = TestPlayer('c')
-    d = TestPlayer('d')
-    e = TestPlayer('e')
+    a = TestPlayer('a', hitServer)
+    b = TestPlayer('b', hitServer)
+    c = TestPlayer('c', hitServer)
+    d = TestPlayer('d', hitServer)
+    e = TestPlayer('e', hitServer)
 
     check = a.client_call_for_http('setup/1/5')
     if check != 'confirm':
@@ -62,7 +63,7 @@ def testGame1():
     e.id = int(e.ids)
     waitForIt()
 
-    x = TestPlayer('frank')
+    x = TestPlayer('frank', hitServer)
     check = x.client_call_for_http(f'client/join_game/{x.name}')
     if "Unable to join, game is full." != check:
         raise AssertionError("frank wasn't supposed to be able to join." + x.text)
@@ -940,7 +941,7 @@ def testGame1():
 
     print('done')
 
-def testGame2():
+def testGame2(hitServer):
     """5 player test game, responding solely to Http/Json information from server. Players elect Hitler after 3 fascist policies have been enacted."""
 
     ###### LOCAL HELPERS ######
@@ -955,7 +956,7 @@ def testGame2():
         if check['name'] != 'c' or check['party'] != 'Liberal' or check['role'] != 'Liberal' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or "Other Fascists" in check:
             raise AssertionError("something wrong with get_status()" + str(check))
         check = d.client_call_for_json(f'client/client_status/{d.ids}')
-        if check['name'] != 'd' or check['party'] != 'Fascist' or check['role'] != 'Fascist' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Hitler'] != 'e' or check['Other Fascists'] != "d":
+        if check['name'] != 'd' or check['party'] != 'Fascist' or check['role'] != 'Fascist' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Hitler'] != 'e' or check['Other Fascists'] != "":
             raise AssertionError("something wrong with get_status()" + str(check))
         check = e.client_call_for_json(f'client/client_status/{e.ids}')
         if check['name'] != 'e' or check['party'] != 'Fascist' or check['role'] != 'Hitler' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Other Fascists'] != "d":
@@ -969,11 +970,11 @@ def testGame2():
         return 'done'
 
     ####### THE MEAT & POTATOES ##########
-    a = TestPlayer('a')
-    b = TestPlayer('b')
-    c = TestPlayer('c')
-    d = TestPlayer('d')
-    e = TestPlayer('e')
+    a = TestPlayer('a', hitServer)
+    b = TestPlayer('b', hitServer)
+    c = TestPlayer('c', hitServer)
+    d = TestPlayer('d', hitServer)
+    e = TestPlayer('e', hitServer)
 
     check = a.client_call_for_http('setup/1/5')
     if check != 'confirm':
@@ -996,7 +997,7 @@ def testGame2():
     e.id = int(e.ids)
     waitForIt()
 
-    x = TestPlayer('frank')
+    x = TestPlayer('frank', hitServer)
     check = x.client_call_for_http(f'client/join_game/{x.name}')
     if "Unable to join, game is full." != check:
         raise AssertionError("frank wasn't supposed to be able to join." + x.text)
@@ -1648,7 +1649,7 @@ def testGame2():
         raise AssertionError('end game text wrong: ' + str(check))
     print('done')
 
-def testGame3():
+def testGame3(hitServer):
     """5 player test game, responding solely to Http/Json information from server. Testing executive powers."""
 
     ###### LOCAL HELPERS ######
@@ -1663,7 +1664,7 @@ def testGame3():
         if check['name'] != 'c' or check['party'] != 'Liberal' or check['role'] != 'Liberal' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or "Other Fascists" in check:
             raise AssertionError("something wrong with get_status()" + str(check))
         check = d.client_call_for_json(f'client/client_status/{d.ids}')
-        if check['name'] != 'd' or check['party'] != 'Fascist' or check['role'] != 'Fascist' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Hitler'] != 'e' or check['Other Fascists'] != "d":
+        if check['name'] != 'd' or check['party'] != 'Fascist' or check['role'] != 'Fascist' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Hitler'] != 'e' or check['Other Fascists'] != "":
             raise AssertionError("something wrong with get_status()" + str(check))
         check = e.client_call_for_json(f'client/client_status/{e.ids}')
         try:
@@ -1680,11 +1681,11 @@ def testGame3():
         return 'done'
 
     ####### THE MEAT & POTATOES ##########
-    a = TestPlayer('a')
-    b = TestPlayer('b')
-    c = TestPlayer('c')
-    d = TestPlayer('d')
-    e = TestPlayer('e')
+    a = TestPlayer('a', hitServer)
+    b = TestPlayer('b', hitServer)
+    c = TestPlayer('c', hitServer)
+    d = TestPlayer('d', hitServer)
+    e = TestPlayer('e', hitServer)
 
     check = a.client_call_for_http('setup/1/5')
     if check != 'confirm':
@@ -1707,7 +1708,7 @@ def testGame3():
     e.id = int(e.ids)
     waitForIt()
 
-    x = TestPlayer('frank')
+    x = TestPlayer('frank', hitServer)
     check = x.client_call_for_http(f'client/join_game/{x.name}')
     if "Unable to join, game is full." != check:
         raise AssertionError("frank wasn't supposed to be able to join." + x.text)
@@ -2490,7 +2491,7 @@ def testGame3():
         raise AssertionError('end game text wrong: ' + str(check))
     print('done')
 
-def testGame4():
+def testGame4(hitServer):
     """5 player test game, responding solely to Http/Json information from server. Testing all executive powers and fascist policy win."""
 
     ###### LOCAL HELPERS ######
@@ -2505,7 +2506,7 @@ def testGame4():
         if check['name'] != 'c' or check['party'] != 'Liberal' or check['role'] != 'Liberal' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or "Other Fascists" in check:
             raise AssertionError("something wrong with get_status()" + str(check))
         check = d.client_call_for_json(f'client/client_status/{d.ids}')
-        if check['name'] != 'd' or check['party'] != 'Fascist' or check['role'] != 'Fascist' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Hitler'] != 'e' or check['Other Fascists'] != "d":
+        if check['name'] != 'd' or check['party'] != 'Fascist' or check['role'] != 'Fascist' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Hitler'] != 'e' or check['Other Fascists'] != "":
             raise AssertionError("something wrong with get_status()" + str(check))
         check = e.client_call_for_json(f'client/client_status/{e.ids}')
         try:
@@ -2526,11 +2527,11 @@ def testGame4():
         return 'done'
 
     ####### THE MEAT & POTATOES ##########
-    a = TestPlayer('a')
-    b = TestPlayer('b')
-    c = TestPlayer('c')
-    d = TestPlayer('d')
-    e = TestPlayer('e')
+    a = TestPlayer('a', hitServer)
+    b = TestPlayer('b', hitServer)
+    c = TestPlayer('c', hitServer)
+    d = TestPlayer('d', hitServer)
+    e = TestPlayer('e', hitServer)
 
     check = a.client_call_for_http('setup/1/5')
     if check != 'confirm':
@@ -2553,7 +2554,7 @@ def testGame4():
     e.id = int(e.ids)
     waitForIt()
 
-    x = TestPlayer('frank')
+    x = TestPlayer('frank', hitServer)
     check = x.client_call_for_http(f'client/join_game/{x.name}')
     if "Unable to join, game is full." != check:
         raise AssertionError("frank wasn't supposed to be able to join." + x.text)
@@ -3961,7 +3962,7 @@ def testGame4():
         raise AssertionError('end game text wrong: ' + str(check))
     print('done')
 
-def testGame5():
+def testGame5(hitServer):
     """5 player test game, responding solely to Http/Json information from server. Quick test confirming election Tracker functions work accurately."""
 
     ###### LOCAL HELPERS ######
@@ -3976,7 +3977,7 @@ def testGame5():
         if check['name'] != 'c' or check['party'] != 'Liberal' or check['role'] != 'Liberal' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or "Other Fascists" in check:
             raise AssertionError("something wrong with get_status()" + str(check))
         check = d.client_call_for_json(f'client/client_status/{d.ids}')
-        if check['name'] != 'd' or check['party'] != 'Fascist' or check['role'] != 'Fascist' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Hitler'] != 'e' or check['Other Fascists'] != "d":
+        if check['name'] != 'd' or check['party'] != 'Fascist' or check['role'] != 'Fascist' or check['statusID'] != currentID or check['statusUpdate'] != currentMessage or check['Hitler'] != 'e' or check['Other Fascists'] != "":
             raise AssertionError("something wrong with get_status()" + str(check))
         check = e.client_call_for_json(f'client/client_status/{e.ids}')
         try:
@@ -3996,11 +3997,11 @@ def testGame5():
         return 'done'
 
     ####### THE MEAT & POTATOES ##########
-    a = TestPlayer('a')
-    b = TestPlayer('b')
-    c = TestPlayer('c')
-    d = TestPlayer('d')
-    e = TestPlayer('e')
+    a = TestPlayer('a', hitServer)
+    b = TestPlayer('b', hitServer)
+    c = TestPlayer('c', hitServer)
+    d = TestPlayer('d', hitServer)
+    e = TestPlayer('e', hitServer)
 
     check = a.client_call_for_http('setup/1/5')
     if check != 'confirm':
@@ -4023,7 +4024,7 @@ def testGame5():
     e.id = int(e.ids)
     waitForIt()
 
-    x = TestPlayer('frank')
+    x = TestPlayer('frank', hitServer)
     check = x.client_call_for_http(f'client/join_game/{x.name}')
     if "Unable to join, game is full." != check:
         raise AssertionError("frank wasn't supposed to be able to join." + x.text)
@@ -4437,14 +4438,21 @@ def waitForIt(doWait=False):
         x = input('')
         return
     else:
-        time.sleep(1)
+        time.sleep(0.01)
         return
 
 
 
 if __name__ == '__main__':
-    testGame1()
-    testGame2()
-    testGame3()
-    testGame4()
-    testGame5()
+    if "true" in sys.argv[0]:
+        testGame1(True)
+        testGame2(True)
+        testGame3(True)
+        testGame4(True)
+        testGame5(True)
+    else:
+        testGame1(False)
+        testGame2(False)
+        testGame3(False)
+        testGame4(False)
+        testGame5(False)
