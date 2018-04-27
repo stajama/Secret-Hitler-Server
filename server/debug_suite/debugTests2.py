@@ -4444,7 +4444,7 @@ def waitForIt(doWait=False):
 
 
 if __name__ == '__main__':
-    if "true" in sys.argv[0]:
+    if "true" in sys.argv:
         testGame1(True)
         testGame2(True)
         testGame3(True)

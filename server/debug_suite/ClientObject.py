@@ -10,8 +10,10 @@ class TestPlayer(object):
         self.id = None
         self.ids = None
         if hitServer:
+            print("to server")
             self.base = 'https://secret-ravine-44641.herokuapp.com/sh/'
         else:
+            print('not to server')
             self.base = "http://127.0.0.1:8000/sh/"
 
     def client_call_for_http(self, uri):
