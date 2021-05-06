@@ -1,7 +1,7 @@
 Django==2.0.1
 flake8==3.4.1
 Flask==0.12
-Flask-Cors==3.0.2
+Flask-Cors==3.0.9
 Jinja2==2.9.4
 jsonschema==2.5.1
 lxml==4.2.0
